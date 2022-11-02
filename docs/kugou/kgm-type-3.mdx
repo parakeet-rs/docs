@@ -1,0 +1,45 @@
+---
+title: 加密类型 3
+sidebar_position: 100
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+import Ruby from '@site/src/components/Ruby';
+
+Rust 的参考实现：
+
+- <CodeRef at="1dcb48a" file="src/kugou/kgm_crypto_type3.rs#L38-L50" />
+- <CodeRef at="1dcb48a" file="src/kugou/utils.rs#L3" />
+
+[初始化解密器](./kgm-init)后，可以进行解密了。
+
+该文档描述了酷狗音乐所使用的 3 号加密算法的解密过程。
+
+是目前（2022.11）酷狗音乐所使用的主流加密算法。
+
+```py title="伪代码"
+fn md5_kugou(data):
+    hash = md5(data)
+
+    # 每次拷贝两个字节，从后面开始拷贝。
+    for (src_i, src_j) in [(14, 15), (12, 13), ..., (0, 1)]:
+        result << hash[src_i] << hash[src_j]
+
+fn set_slot_key(slot_key):
+    key1 = md5_kugou(slot_key)
+
+fn set_file_key(file_key):
+    key2 = md5_kugou(file_key)
+    key2 << byte(0x6b)
+
+fn xor_offset_u32(offset):
+    (a, b, c, d) = unpack('@4B', offset)
+    result = a XOR b XOR c XOR d
+
+fn decrypt(offset, byte):
+    byte = byte XOR key2[offset]
+    byte = byte XOR (byte SHL 4)
+    byte = byte XOR key1[offset]
+    byte = byte XOR xor_offset_u32(offset)
+
+```

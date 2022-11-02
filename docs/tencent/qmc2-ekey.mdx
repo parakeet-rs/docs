@@ -1,0 +1,37 @@
+---
+title: QMC 2 - 密钥解密
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+
+Rust 的参考实现：
+
+- <CodeRef at="1dcb48a" file="src/tencent/qmc2_footer_parser.rs#L113" />
+- <CodeRef at="1dcb48a" file="src/tencent/key_utils.rs#L4-L15" />
+
+
+```py title="伪代码示例"
+fn decrypt_ekey(Vec<u8> ekey):
+  ekey = base64_decode(ekey)
+
+  if ekey.starts_with(b"QQMusic EncV2,Key:"):
+    ekey = tc_tea_decrypt(ekey, stage1_key)
+    ekey = tc_tea_decrypt(ekey, stage2_key)
+    ekey = base64_decode(ekey)
+
+  header = ekey[..8]
+  body = ekey[8..]
+
+  simple_key = make_simple_key(seed, 8)
+
+  tea_key = bytearray()
+  loop i in 0..8:
+    tea_key << simple_key[i] << header[i]
+
+  return header + tc_tea_decrypt(body, tea_key)
+```
+
+## 下一步
+
+- [QMC2-Map 解密算法](./qmc2-map)
+- [QMC2-RC4 解密算法](./qmc2-rc4)

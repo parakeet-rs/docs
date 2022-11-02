@@ -1,0 +1,28 @@
+---
+title: QMC 1 - 文件格式
+sidebar_position: 0
+---
+
+import GitHub from '@site/src/components/GitHub';
+
+QQ 音乐所使用的最古老的一种加密方案。
+
+已知有很多种密钥的排列方式。例如 <GitHub>Presburger/qmc-decoder</GitHub> 使用的
+“走迷宫” 式密钥查询，或 <GitHub>jixunmoe/qmc-decode</GitHub> 使用的 “预展开密钥表”。
+
+## 后缀名
+
+目前看来有以下几种后缀名：
+
+- `qmcflac` - FLAC
+- `qmc3` - MP3
+
+## 文件结构
+
+源文件加密后的流。没有特定文件结构。
+
+## 支持
+
+库可以正常解密使用该加密的文件。
+
+解密流程可以参考 [QMC1 解密算法](./qmc1)。

@@ -1,0 +1,51 @@
+---
+title: QMC 1 - 解密算法
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+import WarnQMC from './_warn_qmc_7fff.mdx';
+
+Rust 的参考实现：
+
+- <CodeRef at="1dcb48a" file="src/tencent/qmc1.rs" />
+
+<WarnQMC />
+
+```py title="伪代码示例 (128 字节密钥)"
+fn decrypt_file(Vec<u8> buffer):
+  offset = 0
+
+  loop:
+    if end_of_file: break
+
+    # 0x7fff 是一个特殊情况
+    if offset == 0x7fff:
+      i = offset
+    else:
+      i = offset % 0x7fff
+
+    buffer[i] = buffer[i] XOR key[i % 128]
+
+    offset = offset + 1
+```
+
+当然，你也可以使用自己提取的 256 长度密钥进行解密：
+
+```py title="伪代码示例 (256 字节密钥)"
+fn decrypt_file(Vec<u8> buffer):
+  offset = 0
+
+  loop:
+    if end_of_file: break
+
+    # 0x7fff 是一个特殊情况
+    if offset == 0x7fff:
+      i = offset
+    else:
+      i = offset % 0x7fff
+
+    key_index = offset * offset + 80923
+    buffer[i] = buffer[i] XOR key[key_index % 256]
+
+    offset = offset + 1
+```

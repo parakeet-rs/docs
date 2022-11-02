@@ -1,0 +1,35 @@
+---
+title: QMC 2 (MAP) - 解密算法
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+import WarnQMC from './_warn_qmc_7fff.mdx';
+
+Rust 的参考实现：
+
+- <CodeRef at="1dcb48a" file="src/tencent/qmc2_decryptor_map.rs#L56" />
+- <CodeRef at="1dcb48a" file="src/tencent/qmc_legacy_block.rs#L10" />
+
+<WarnQMC />
+
+```py title="伪代码示例"
+fn decrypt_file(Vec<u8> buffer):
+  offset = 0
+
+  loop:
+    if end_of_file: break
+
+    # 0x7fff 是一个特殊情况
+    if offset == 0x7fff:
+      i = 0x7fff
+    else:
+      i = offset % 0x7fff
+
+    key_index = (i * i + 71214) % key.size()
+    rotation = (key_index + 4) % 8
+    final_key = (key[key_index] << rotation) | (key[key_index] >> rotation)
+
+    buffer[i] = buffer[i] XOR final_key
+
+    offset = offset + 1
+```

@@ -1,0 +1,31 @@
+---
+title: 加密类型 2
+sidebar_position: 100
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+import Ruby from '@site/src/components/Ruby';
+
+Rust 的参考实现：
+
+- <CodeRef at="1dcb48a" file="src/kugou/kgm_crypto_type2.rs#L33-L36" />
+
+[初始化解密器](./kgm-init)后，可以进行解密了。
+
+该文档描述了酷狗音乐所使用的 2 号加密算法的解密过程。
+
+该加密类型至少在 2017 年还在使用。
+
+该算法未使用文件密钥，只使用到了密码槽密钥。
+
+```py title="伪代码"
+fn decrypt(offset, byte):
+    byte = byte XOR key[offset % key.len()]
+    byte = byte XOR (byte SHL 4)
+    return byte
+```
+
+很显然这种加密方案有很大的一个缺陷，即便只是<!--
+-->[分析加密前后的同一份文件][kgm_v2_analysis]也能得到一个能正确运行的解密器。
+
+[kgm_v2_analysis]: https://www.cnblogs.com/KMBlog/p/6877752.html

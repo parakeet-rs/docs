@@ -1,0 +1,38 @@
+---
+title: 解密流程
+sidebar_position: 10
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+
+参考代码：
+
+- <CodeRef at="1dcb48a" file="src/kugou/kgm_decryptor.rs#L67-L99" />
+- <CodeRef at="1dcb48a" file="src/kugou/kgm_crypto_factory.rs#L46" />
+
+流程：
+
+1. 读入并解析文件头；
+2. 根据 密码槽（`key_slot`）的值选择一个“密码槽密钥（`slot_key`）”；
+3. 根据 加密类型（`encryption_type`）的值选择一个解密器的实现；
+4. 初始化解密器 - 分别传入 文件密钥（`file_key`）与 密码槽密钥（`slot_key`）；
+5. 根据文件偏移进行解密。
+
+```py title="伪代码"
+fn decrypt_file(file):
+    header = parse_header(file)
+
+    decryptor = create_decryptor(header.encryption_type)
+    slot_key = get_slot_key(header.key_slot)
+    decryptor.set_slot_key(slot_key)
+    decryptor.set_file_key(file_key)
+
+    file.seek(header.offset_to_data, FILE_SEEK_BEGIN)
+
+    offset = 0
+    while not file.eof():
+        byte = file.read_byte()
+        byte = decrypt(offset, byte)
+
+        offset = offset + 1
+```

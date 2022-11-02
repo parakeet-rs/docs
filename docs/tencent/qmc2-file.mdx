@@ -1,0 +1,49 @@
+---
+title: QMC 2 - 文件格式
+sidebar_position: 0
+---
+
+import GitHub from '@site/src/components/GitHub';
+import Ruby from '@site/src/components/Ruby';
+
+当前 QQ 音乐使用的主流加密格式。
+
+## 后缀名
+
+目前看来有以下几种后缀名：
+
+- `mgg` - ogg 文件
+- `mflac` - flac 文件
+
+有些客户端会在后缀名的后面再添加一位数字，如 `mgg0` 或 `mflac1`。没有任何特殊意义。
+
+## 文件结构
+
+文件分为两部分：
+
+- 加密后的音频流
+- 加密元信息（含有 Embed Key）
+
+目前已知的元信息有三种，其中两种含有加密后的嵌入密钥。
+
+### 安卓客户端生成的加密元信息
+
+import QMC2Android from './_qmc2_android.mdx';
+
+<QMC2Android />
+
+### PC 客户端生成的加密元信息
+
+import QMC2PC from './_qmc2_pc.mdx';
+
+<QMC2PC />
+
+## 支持
+
+库可以正常解密部分使用该加密方案的文件。
+
+未测试 iOS / Mac 平台，已知不支援安卓客户端生成的 `STag` 标签的加密文件。
+
+## 下一步
+
+- [QMC2 密钥解密](./qmc2-ekey)

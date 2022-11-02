@@ -1,0 +1,40 @@
+import Ruby from '@site/src/components/Ruby';
+
+使用<Ruby caption="Big Endian">大端序</Ruby>。
+
+其中可能包含两种数据，通过结尾的 `tag` 字段进行判断，数据结构如下：
+
+```c
+struct QMAndroidTag {
+  char csv_row[variable]; // 使用逗号分隔的文字，可以分解为 3 段。
+  uint32_t sizeof_csv_row; // 上述字符串的大小
+  char tag[4]; // 文件类型标记
+}
+```
+
+#### QTag
+
+当 `QMAndroidTag.tag` 为 `"QTag"` 时，`csv_row` 由下述三段组成：
+
+- `encrypted_key` - 长度可变，加密后的嵌入密钥。
+- `song_id` - 曲目 ID，数字形式的文本。
+- `unknown` - 未知数据，该值恒定为 `'2'`。
+
+样例：
+
+```text
+0000h  45 6E 63 72 79 70 74 65 64 4B 65 79 2C 31 32 33  EncryptedKey,123 
+0010h  34 35 36 2C 32 15 00 00 00 51 54 61 67           456,2....QTag
+```
+
+#### STag
+
+当 `QMAndroidTag.tag` 为 `"STag"` 时，`csv_row` 由下述三段组成：
+
+- `unknwon_1` - 纯数字，可能是 `song_id`。
+- `unknown_2` - 未知数据，该值恒定为 `'2'`。
+- `unknown_3` - 可能是 `media_id`，不确定。
+
+因为 `STag` 标签的文件没有再内置密钥，因此未深入研究该类加密。
+
+初步怀疑加密算法未进行更变，但是密钥存储在应用的私有目录下。

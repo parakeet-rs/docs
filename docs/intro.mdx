@@ -1,0 +1,21 @@
+---
+title: 首页
+sidebar_position: -1
+hide_title: true
+---
+
+import GitHub from '@site/src/components/GitHub';
+
+这里是 <GitHub>parakeet-rs/parakeet-crypto-rs</GitHub>
+项目的百科，主要用于记录各类研究的文件格式与解密流程。
+
+## 安装
+
+添加下述项目至 `crate.toml` 内：
+
+```toml
+[dependencies]
+parakeet-crypto = { git = "https://github.com/parakeet-rs/parakeet-crypto-rs" }
+```
+
+然后调用 `parakeet_crypto::` 命名空间内的方法即可。
