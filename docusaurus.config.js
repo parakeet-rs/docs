@@ -41,7 +41,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: 'https://github.com/parakeet-rs/docs/tree/main/edit/',
+          editUrl: 'https://github.com/parakeet-rs/docs/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
