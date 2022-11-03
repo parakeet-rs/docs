@@ -1,0 +1,15 @@
+```py title="伪代码"
+fn encrypt(decrypted_header, content_key, scramble_table):
+    for encrypted_index in 0..1024:
+        decrypted_index = scramble_table.index_of(encrypted_index)
+
+        byte = decrypted_header[decrypted_index] XOR content_key[decrypted_index]
+        result << byte
+
+fn decrypt(encrypted_header, content_key, scramble_table):
+    for decrypted_index in 0..1024:
+        encrypted_index = scramble_table[decrypted_index]
+
+        byte = encrypted_header[encrypted_index] XOR content_key[decrypted_index]
+        result << byte
+```
