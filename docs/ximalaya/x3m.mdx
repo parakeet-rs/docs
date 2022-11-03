@@ -1,0 +1,18 @@
+---
+title: X3M 解密算法
+sidebar_position: 100
+---
+
+import CodeRef from '@site/src/components/CodeRef';
+import PseudoCode from './_xmly_pseudo.mdx';
+
+Rust 的参考实现：
+
+- <CodeRef at="next-commit" file="src/ximalaya/xmly.rs" />
+
+参数：
+
+- `content_key`: `32` 字节的密钥
+- `scramble_table`: `1024` 个成员组成的数组，取值范围为 `[0, 1024)`。
+
+<PseudoCode />
