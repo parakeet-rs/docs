@@ -1,0 +1,21 @@
+---
+title: 命令行调用
+sidebar_position: 10
+---
+
+推荐将密钥保存到文件，然后通过 `@文件名` 的方式指定。
+
+```sh title="使用测试密钥来加密测试文件"
+cargo run xmly --scramble-table "@sample/test_xmly_scramble_table.bin" \
+    --key "@sample/test_x3m_key.bin" \
+    --encrypt "sample/test_121529_32kbps.ogg" \
+    local/encrypted.x3m
+```
+
+```sh title="使用测试密钥来解密刚加密的文件"
+cargo run xmly \
+    --scramble-table "@sample/test_xmly_scramble_table.bin" \
+    --key "@sample/test_x3m_key.bin" \
+    local/encrypted.x3m \
+    local/decrypted_x3m.ogg
+```
