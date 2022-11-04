@@ -20,7 +20,7 @@ Rust 的参考实现：
 
 ```py title="伪代码"
 fn decrypt(offset, byte):
-    byte = byte XOR key[offset % key.len()]
+    byte = byte XOR key[offset]
     byte = byte XOR (byte SHL 4)
     return byte
 ```
