@@ -1,0 +1,37 @@
+---
+title: 命令行调用
+sidebar_position: 100
+---
+
+import HexViewer from '@site/src/components/HexViewer';
+
+## QMCv2
+
+支持 EncV2 以及旧版本的加密。
+
+```sh title="指定的解密密钥种子来解密文件"
+cargo run --release qmc2 --seed 123 "sample/test_qmc2_rc4.mgg" "decrypted.ogg"
+cargo run --release qmc2 --seed 123 "sample/test_qmc2_map.mgg" "decrypted.ogg"
+```
+
+```sh title="指定的解密密钥种子来解密文件，以及测试混淆密钥来解密文件"
+cargo run --release qmc2 --seed 123 \
+  --key1 "base64:CwwNDg8QERIVFhcYGRobHA==" \
+  --key2 "base64:HyAhIiMkJSYpKissLS4vMA==" \
+  "sample/test_qmc2_rc4_EncV2.mgg" "decrypted.ogg"
+```
+
+### 参数：
+
+- `--seed` - 解密内嵌密钥（`embed_key`）时所需要的一个种子。取值范围为 `[0-255)`。
+- `--key1` / `--key2` - 用于解码 EncV2 版本内嵌密钥（`embed_key`）的解码密钥。
+
+### 测试密钥
+
+混淆密钥 1 `--key1 "base64:CwwNDg8QERIVFhcYGRobHA=="`：
+
+<HexViewer data={`b64:CwwNDg8QERIVFhcYGRobHA==`} />
+
+混淆密钥 2 `--key2 "base64:HyAhIiMkJSYpKissLS4vMA=="`：
+
+<HexViewer data={`b64:HyAhIiMkJSYpKissLS4vMA==`} />
