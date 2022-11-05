@@ -1,12 +1,12 @@
 ---
-title: 文件密钥签名
+title: 密钥验证
 sidebar_position: 0
 ---
 
 import CodeRef from '@site/src/components/CodeRef';
 import Ruby from '@site/src/components/Ruby';
 
-接[上文提及的文件头](./kgm-file)。虽然文件密钥是随机生成的，但酷狗的音乐播放器会对该密钥的合法性进行验证。
+虽然文件密钥是随机生成的，但酷狗的音乐播放器会对该密钥的合法性进行验证。
 
 该解密库也实现了这个检查，并将在签名不合法的时候抛出错误。
 
