@@ -6,11 +6,6 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  markdown: {
-    mermaid: true,
-  },
-  themes: ['@docusaurus/theme-mermaid'],
-  
   title: 'Parakeet-RS',
   tagline: '小鹦鹉流媒体加解密库文档',
   url: 'https://docs.parakeet.jixun.dev/',
