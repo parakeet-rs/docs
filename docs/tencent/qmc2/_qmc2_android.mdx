@@ -1,4 +1,5 @@
 import Ruby from '@site/src/components/Ruby';
+import HexViewer from '@site/src/components/HexViewer';
 
 使用<Ruby caption="Big Endian">大端序</Ruby>。
 
@@ -22,10 +23,10 @@ struct QMAndroidTag {
 
 样例：
 
-```text
-0000h  45 6E 63 72 79 70 74 65 64 4B 65 79 2C 31 32 33  EncryptedKey,123 
-0010h  34 35 36 2C 32 15 00 00 00 51 54 61 67           456,2....QTag
-```
+<HexViewer data={`hex:
+  45 6E 63 72 79 70 74 65 64 4B 65 79 2C 31 32 33
+  34 35 36 2C 32 15 00 00 00 51 54 61 67
+`} />
 
 #### STag
 

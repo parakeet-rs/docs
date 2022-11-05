@@ -3,63 +3,35 @@ title: 命令行调用
 sidebar_position: 100
 ---
 
-## QMCv1
-
-支持 `key58` 或 `key128` 格式的密钥。
-
-```sh
-cargo run --release qmc1 --static-key "@qmc1_key58.bin" "sample/test_qmc1.qmcogg" "decrypted.ogg"
-cargo run --release qmc1 --static-key "@qmc1_key128.bin" "sample/test_qmc1.qmcogg" "decrypted.ogg"
-```
-
-### 参数：
-
-- `--static-key` - 流解码密钥。可以是 `58key` 或 `128key` 的密钥。
-
-之后附加两个参数，分别为 `输入文件路径` 与 `输出文件路径`。
-
-### 测试密钥
-
-```text
-       --static-key "@qmc1_key58.bin"
-0000h  FF FE 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E  ÿþ.............. 
-0010h  0F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E  ................ 
-0020h  1F 20 21 22 23 24 25 26 27 28 29 2A 2B 2C 2D 2E  . !"#$%&'()*+,-. 
-0030h  2F 30 31 32 33 34 35 36 37 38                    /012345678
-
-       --static-key "@qmc1_key128.bin"
-0000h  FF 01 02 03 04 05 06 07 FE 08 09 0A 0B 0C 0D 0E  ÿ.......þ....... 
-0010h  FF 0F 10 11 12 13 14 15 FE 16 17 18 19 1A 1B 1C  ÿ.......þ....... 
-0020h  FF 1D 1E 1F 20 21 22 23 FE 24 25 26 27 28 29 2A  ÿ... !"#þ$%&'()* 
-0030h  FF 2B 2C 2D 2E 2F 30 31 FE 32 33 34 35 36 37 38  ÿ+,-./01þ2345678 
-0040h  FF 38 37 36 35 34 33 32 FE 31 30 2F 2E 2D 2C 2B  ÿ8765432þ10/.-,+ 
-0050h  FF 2A 29 28 27 26 25 24 FE 23 22 21 20 1F 1E 1D  ÿ*)('&%$þ#"! ... 
-0060h  FF 1C 1B 1A 19 18 17 16 FE 15 14 13 12 11 10 0F  ÿ.......þ....... 
-0070h  FF 0E 0D 0C 0B 0A 09 08 FE 07 06 05 04 03 02 01  ÿ.......þ....... 
-```
+import HexViewer from '@site/src/components/HexViewer';
 
 ## QMCv2
 
 支持 EncV2 以及旧版本的加密。
 
-```sh
+```sh title="指定的解密密钥种子来解密文件"
 cargo run --release qmc2 --seed 123 "sample/test_qmc2_rc4.mgg" "decrypted.ogg"
 cargo run --release qmc2 --seed 123 "sample/test_qmc2_map.mgg" "decrypted.ogg"
+```
 
-cargo run --release qmc2 --seed 123 --key1 "base64:CwwNDg8QERIVFhcYGRobHA==" --key2 "base64:HyAhIiMkJSYpKissLS4vMA==" "sample/test_qmc2_rc4_EncV2.mgg" "decrypted.ogg"
+```sh title="指定的解密密钥种子来解密文件，以及测试混淆密钥来解密文件"
+cargo run --release qmc2 --seed 123 \
+  --key1 "base64:CwwNDg8QERIVFhcYGRobHA==" \
+  --key2 "base64:HyAhIiMkJSYpKissLS4vMA==" \
+  "sample/test_qmc2_rc4_EncV2.mgg" "decrypted.ogg"
 ```
 
 ### 参数：
 
-- `--seed` - 内嵌密钥（`embed_key`）的解码时所需要的种子。
+- `--seed` - 解密内嵌密钥（`embed_key`）时所需要的一个种子。取值范围为 `[0-255)`。
 - `--key1` / `--key2` - 用于解码 EncV2 版本内嵌密钥（`embed_key`）的解码密钥。
 
 ### 测试密钥
 
-```text
-       --key1 "base64:CwwNDg8QERIVFhcYGRobHA=="
-0000h  0B 0C 0D 0E 0F 10 11 12 15 16 17 18 19 1A 1B 1C  ................ 
+混淆密钥 1 `--key1 "base64:CwwNDg8QERIVFhcYGRobHA=="`：
 
-       --key2 "base64:HyAhIiMkJSYpKissLS4vMA=="
-0010h  1F 20 21 22 23 24 25 26 29 2A 2B 2C 2D 2E 2F 30  . !"#$%&)*+,-./0 
-```
+<HexViewer data={`b64:CwwNDg8QERIVFhcYGRobHA==`} />
+
+混淆密钥 2 `--key2 "base64:HyAhIiMkJSYpKissLS4vMA=="`：
+
+<HexViewer data={`b64:HyAhIiMkJSYpKissLS4vMA==`} />

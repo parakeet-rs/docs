@@ -1,4 +1,5 @@
 import Ruby from '@site/src/components/Ruby';
+import HexViewer from '@site/src/components/HexViewer';
 
 使用<Ruby caption="Little Endian">小端序</Ruby>。
 
@@ -9,7 +10,7 @@ import Ruby from '@site/src/components/Ruby';
 
 样例：
 
-```text
-0000h  45 6E 63 72 79 70 74 65 64 4B 65 79 48 65 72 65  EncryptedKeyHere 
-0010h  10 00 00 00                                      ....
-```
+<HexViewer data={`hex:
+  45 6E 63 72 79 70 74 65 64 4B 65 79 48 65 72 65
+  10 00 00 00
+`} />
