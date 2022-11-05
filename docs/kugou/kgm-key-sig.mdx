@@ -5,6 +5,8 @@ sidebar_position: 0
 
 import CodeRef from '@site/src/components/CodeRef';
 import Ruby from '@site/src/components/Ruby';
+import HexViewer from '@site/src/components/HexViewer';
+
 
 虽然文件密钥是随机生成的，但酷狗的音乐播放器会对该密钥的合法性进行验证。
 
@@ -16,9 +18,7 @@ KGM 解密器在初始化后，会对 `file_sig` 进行解密操作（使用偏�
 
 解密结束后的内容应等于该预设内容：
 
-```text
-0000h  38 85 ED 92 79 5F F8 4C B3 03 61 41 16 A0 1D 47  8…í’y_øL³.aA...G 
-```
+<HexViewer data={"hex:3885ed92795ff84cb303614116a01d47"} />
 
 ---
 

@@ -32,3 +32,34 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+.hex-viewer {
+  padding: 0.5em 1em;
+  padding-right: 7em;
+  border: 1px solid #ccc;
+  box-sizing: content-box;
+  border-radius: 0.25em;
+  width: 100%;
+}
+
+.hex-viewer .byteValues {
+  padding-right: 2em;
+}
+
+.hex-viewer .nybbleHighValue {
+  padding-left: 0.2em !important;
+}
+
+.hex-viewer .nybbleLowValue {
+  padding-right: 0.2em !important;
+}
+
+.hex-viewer .hexEditorBody {
+  padding-right: 5em;
+  box-sizing: content-box !important;
+}
+
+.hex-viewer .hexEditorHeader,
+.hex-viewer .hexEditorBody {
+  overflow-y: visible !important;
+}
