@@ -19,6 +19,9 @@
   --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
     'Liberation Mono', 'Microsoft YaHei UI Light', 'Microsoft YaHei',
     '微软雅黑', monospace;
+
+  --jixun-box-border-colour: #eee;
+  --jixun-box-shadow-colour: #ddd;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -31,16 +34,28 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --jixun-box-border-colour: #333;
+  --jixun-box-shadow-colour: rgba(0,0,0,0.6);
+}
+
+.hex-viewer-container {
+  padding: 1em;
+  border: 1px solid var(--jixun-box-border-colour);
+  box-shadow: 0 0 10px var(--jixun-box-shadow-colour);
+  box-sizing: content-box;
+  margin-bottom: var(--ifm-leading);
+  border-radius: 0.25em;
+}
+
+.hex-viewer-container > hr {
+  margin: 0.5em 1em;
 }
 
 .hex-viewer {
-  padding: 0.5em 1em;
   padding-right: 7em;
-  border: 1px solid #ccc;
   box-sizing: content-box;
-  border-radius: 0.25em;
   width: 100%;
-  margin-bottom: var(--ifm-leading);
 }
 
 .hex-viewer .byteValues {
