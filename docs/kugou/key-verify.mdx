@@ -8,15 +8,15 @@ import Ruby from '@site/src/components/Ruby';
 import HexViewer from '@site/src/components/HexViewer';
 
 
-虽然文件密钥是随机生成的，但酷狗的音乐播放器会对该密钥的合法性进行验证。
+虽然文件密钥是随机生成的，但 PC 端的播放器会对该密钥的合法性进行验证。
 
-该解密库也实现了这个检查，并将在签名不合法的时候抛出错误。
+该解密库也实现了这个检查，并会在签名不合法的时候抛出错误。
 
 ## 签名验证
 
-KGM 解密器在初始化后，会对 `file_sig` 进行解密操作（使用偏移 `0`）。
+KGM 解密器在初始化后，会对 `file_sig` 进行解密操作（使用参数 `offset = 0`）。
 
-解密结束后的内容应等于该预设内容：
+解密结束后的内容应等于该期待值：
 
 <HexViewer data={"hex:3885ed92795ff84cb303614116a01d47"} />
 

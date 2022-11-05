@@ -5,38 +5,67 @@ sidebar_position: 0
 
 import Ruby from '@site/src/components/Ruby';
 
-酷狗的 `KGM` 与 `VPR` 加密文件使用相同的加密方案。
+该项目实现了酷狗 PC 版的 `KGM` 与 `VPR` 加密算法实现。<!--
+-->虽然它们的后缀名不同，但是解密过程是相同的。
 
-:::caution 新旧解密算法不同
+:::tip 该项目实现的不是“码表”解密
 
-此前对该文件格式经过粗略的实验提取通用的<Ruby caption="xor pad">密码表</Ruby><!--
--->来进行解密，但是对内存要求较高。此后也试验过对该密码表进行分析，精简为使用三个 16 × 17
-大小的密码表进行解码。
+在此之前尝试过基于明文的攻击，即通过对比源文件与加密后的文件的不同进行分析，得到了一个<!--
+--><Ruby caption="xor pad">密码表</Ruby>来进行解密。<!--
+-->该方法有一定的缺陷，如要求足够多的内存且需要使用工具进行压缩。
 
-当前版本的 KGM 和 VPR 使用相同的解密流程。
+在此之后也对该密码表进行过攻击[^1]，改进为使用三个 16 × 17 大小的密码表进行解码。<!--
+-->缺陷则是随着文件大小的增加，越是在后面的内容越需要更多时间进行解密。
+
+该项目实现的解密算法不依赖该密码表，而是采用了与 PC 客户端相同的解密实现。
+
+[^1]: [对 KGM 密码表进行压缩的尝试](https://github.com/jixunmoe/kugou-crypto/blob/v1.0.3/src/cli/compress-mask.ts#L11)
 
 :::
 
-加密文件头使用<Ruby caption="Little Endian">小端序</Ruby>，最小需要 `0x3c` 个字节。
+## 加密格式
 
-```c
-struct kgm_header {
-    // 偏移: 0x00
-    BYTE magic[0x10]; // 固定内容
+加密后的文件可以观测到文件顶部的内容更变。
 
-    // 偏移: 0x10
-    DWORD offset_to_data; // 到加密数据处的文件偏移
-    DWORD encryption_type; // 加密类型，可以是 2 / 3 / 4 这三个值之一。
-    DWORD key_slot; // 密钥槽号
+加密文件头使用<Ruby caption="Little Endian">小端序</Ruby>对数据进行编码，至少占用
+`0x3c` 个字节。
 
-    // 偏移: 0x1c
-    BYTE file_sig[0x10]; // 文件密钥合法性验证
-    BYTE file_key[0x10]; // 文件密钥
+```c title="文件头格式"
+struct file_header {
+  // 偏移: 0x00
+  BYTE magic[0x10]; // 固定内容
 
-    // 偏移: 0x3c
-    BYTE unused_padding[self.offset_to_data - 0x3c]; // 填充
+  // 偏移: 0x10
+  DWORD offset_to_data; // 到加密数据处的文件偏移
+  DWORD encryption_type; // 加密类型，可以是 2 / 3 / 4 这三个值之一。
+  DWORD key_slot; // 密钥槽号
 
-    // 偏移: self.offset_to_data
-    // 加密后的数据在从此处开始，到文件结束为止。
+  // 偏移: 0x1c
+  BYTE file_sig[0x10]; // 文件密钥合法性验证
+  BYTE file_key[0x10]; // 文件密钥
+
+  // 偏移: 0x3c
+  BYTE padding[self.offset_to_data - 0x3c];
 }
 ```
+
+### 密钥槽
+
+PC 版的客户端储存了一个<Ruby caption="slot key">密钥槽</Ruby>，通过文件头的
+`key_slot` 值选择。
+
+理论上来说，客户端可以储存各种不同的密钥。但实际上只有 `1` 号密钥槽有存储密钥。
+
+### 加密类型
+
+:::tip 关于时间线…
+
+以下内容的“当前”指的是 2022.11.01。
+
+:::
+
+当前版本的酷狗 PC 客户端实现了三种加密类型，分别为 `2`、`3` 与 `4`。
+
+其中 2 号加密通过观察，至少在 2017 年时还在投入使用。
+
+目前观测到样本主要采用的是 3 号加密。
