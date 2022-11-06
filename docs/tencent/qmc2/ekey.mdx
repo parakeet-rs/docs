@@ -10,7 +10,6 @@ Rust 的参考实现：
 - <CodeRef at="1dcb48a" file="src/tencent/qmc2_footer_parser.rs#L113" />
 - <CodeRef at="1dcb48a" file="src/tencent/key_utils.rs#L4-L15" />
 
-
 ```py title="伪代码示例"
 fn decrypt_ekey(ekey: bytes):
   ekey = base64_decode(ekey)
@@ -26,7 +25,7 @@ fn decrypt_ekey(ekey: bytes):
   simple_key = make_simple_key(seed, 8)
 
   tea_key = bytearray()
-  loop i in 0..8:
+  for i in 0..8:
     tea_key << simple_key[i] << header[i]
 
   return header + tc_tea_decrypt(body, tea_key)

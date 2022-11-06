@@ -8,7 +8,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 function removeItalics(inputTheme) {
   const theme = cloneDeep(inputTheme);
 
-  theme.styles?.forEach(({style}) => {
+  theme.styles?.forEach(({ style }) => {
     if (style.fontStyle === 'italic') {
       delete style.fontStyle;
     }

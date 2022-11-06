@@ -24,51 +24,50 @@ Rust 的参考实现：
 
 ```py title="伪代码"
 fn v4_md5_kugou(data: bytes):
-    result = [] # 预期大小 = 31
-    md5_digest = md5(data)
-    indexes = [
-        0x05, 0x0e, 0x0d, 0x02, 0x0c, 0x0a, 0x0f, 0x0b,
-        0x03, 0x08, 0x05, 0x06, 0x09, 0x04, 0x03, 0x07,
-        0x00, 0x0e, 0x0d, 0x06, 0x02, 0x0c, 0x0a, 0x0f,
-        0x01, 0x0b, 0x08, 0x07, 0x09, 0x04, 0x01,
-    ]
+  result = [] # 预期大小 = 31
+  md5_digest = md5(data)
+  indexes = [
+    0x05, 0x0e, 0x0d, 0x02, 0x0c, 0x0a, 0x0f, 0x0b,
+    0x03, 0x08, 0x05, 0x06, 0x09, 0x04, 0x03, 0x07,
+    0x00, 0x0e, 0x0d, 0x06, 0x02, 0x0c, 0x0a, 0x0f,
+    0x01, 0x0b, 0x08, 0x07, 0x09, 0x04, 0x01,
+  ]
 
-    # 对照 index，将指定位置的哈希值拷贝下来。
-    for index in indexes:
-        result << md5_digest[index]
+  # 对照 index，将指定位置的哈希值拷贝下来。
+  for index in indexes:
+    result << md5_digest[index]
 
 fn v4_key_expansion(data: bytes, table: str):
-    md5_digest = v4_md5_kugou(data)
-    result = [] # 预期大小 = 4 * (md5_digest.len() - 1) * (key.len() - 1)
+  md5_digest = v4_md5_kugou(data)
+  result = [] # 预期大小 = 4 * (md5_digest.len() - 1) * (key.len() - 1)
 
-    # 枚举所有 data/table 的元素，跳过第一项。
-    for i in 1..data.len():
-        for j in 1..md5_digest.len():
-            temp = i * j * data[i] * md5_digest[j]
-            # 取出小端字节组，例 a == (temp >> 0) & 0xFF
-            (a, b, c, d) = pack('<4B', temp)
-            result << a << d << c << b
+  # 枚举所有 data/table 的元素，跳过第一项。
+  for i in 1..data.len():
+    for j in 1..md5_digest.len():
+      temp = i * j * data[i] * md5_digest[j]
+      # 取出小端字节组，例 a == (temp >> 0) & 0xFF
+      (a, b, c, d) = pack('<4B', temp)
+      result << a << d << c << b
 
 fn set_slot_key(slot_key):
-    key1 = md5(slot_key)
-    key1 = hex(key1) # 小写，无空格
-    key1 = base64(key1) # 结尾的 "=" 不能删除。
-    key1 = v4_key_expansion(key1, str_slot_key_table)
+  key1 = md5(slot_key)
+  key1 = hex(key1) # 小写，无空格
+  key1 = base64(key1) # 结尾的 "=" 不能删除。
+  key1 = v4_key_expansion(key1, str_slot_key_table)
 
 fn set_file_key(file_key):
-    key2 = v4_key_expansion(file_key, str_file_key_table)
+  key2 = v4_key_expansion(file_key, str_file_key_table)
 
 fn xor_offset_u32(offset):
-    (a, b, c, d) = unpack('@4B', offset)
-    result = a XOR b XOR c XOR d
+  (a, b, c, d) = unpack('@4B', offset)
+  result = a XOR b XOR c XOR d
 
 fn decrypt(offset, byte):
-    key1_index = offset % key1.len
-    key2_index = floor(offset / key1.len) % key2.len
+  key1_index = offset % key1.len
+  key2_index = floor(offset / key1.len) % key2.len
 
-    byte = byte XOR key2[key2_index]
-    byte = byte XOR (byte SHL 4)
-    byte = byte XOR key1[key1_index]
-    byte = byte XOR xor_offset_u32(offset)
-
+  byte = byte XOR key2[key2_index]
+  byte = byte XOR (byte SHL 4)
+  byte = byte XOR key1[key1_index]
+  byte = byte XOR xor_offset_u32(offset)
 ```

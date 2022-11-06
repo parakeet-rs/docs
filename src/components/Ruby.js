@@ -3,9 +3,9 @@ import React from 'react';
 export default function Ruby({ children, caption }) {
   return (
     <ruby>
-      { children }
+      {children}
       <rp>(</rp>
-      <rt>{ caption }</rt>
+      <rt>{caption}</rt>
       <rp>)</rp>
     </ruby>
   );

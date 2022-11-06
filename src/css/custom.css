@@ -17,8 +17,8 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 
   --ifm-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Microsoft YaHei UI Light', 'Microsoft YaHei',
-    '微软雅黑', monospace;
+    'Liberation Mono', 'Microsoft YaHei UI Light', 'Microsoft YaHei', '微软雅黑',
+    monospace;
 
   --jixun-box-border-colour: #eee;
   --jixun-box-shadow-colour: #ddd;
@@ -36,7 +36,7 @@
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 
   --jixun-box-border-colour: #333;
-  --jixun-box-shadow-colour: rgba(0,0,0,0.6);
+  --jixun-box-shadow-colour: rgba(0, 0, 0, 0.6);
 }
 
 .hex-viewer-container {

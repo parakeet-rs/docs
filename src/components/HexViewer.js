@@ -13,21 +13,22 @@ export default function HexViewer({
   hideColHeader = false,
 }) {
   const byteData = bufferFromString(data);
-  let actualHeight = height || (Math.ceil(byteData.length / 16) * 30 + 30);
+  let actualHeight = height || Math.ceil(byteData.length / 16) * 30 + 30;
   actualHeight = Math.min(actualHeight, 300);
 
   return (
     <ErrorBoundary
-      fallback={({error, tryAgain}) => (
+      fallback={({ error, tryAgain }) => (
         <div>
           <p>This component crashed because of error: {error.message}.</p>
           <button onClick={tryAgain}>Try Again!</button>
         </div>
-      )}>
-      <section className='hex-viewer-container'>
-        { title }
+      )}
+    >
+      <section className="hex-viewer-container">
+        {title}
         <HexEditor
-          className='hex-viewer'
+          className="hex-viewer"
           showRowLabels={!hideRowHeader}
           showColumnLabels={!hideColHeader}
           columns={16}

@@ -22,20 +22,11 @@ export default function GitHub(props) {
       <GitHub path={path}>
         <code>
           {name}
-          {branch && (
-            <small>
-              {" "}
-              (@{ branch })
-            </small>
-          )}
+          {branch && <small> (@{branch})</small>}
         </code>
       </GitHub>
     );
   }
 
-  return (
-    <a href={"https://github.com/" + props.path}>
-      { props.children }
-    </a>
-  );
+  return <a href={'https://github.com/' + props.path}>{props.children}</a>;
 }

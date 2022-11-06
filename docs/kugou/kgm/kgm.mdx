@@ -20,19 +20,19 @@ import CodeRef from '@site/src/components/CodeRef';
 
 ```py title="伪代码"
 fn decrypt_file(file):
-    header = parse_header(file)
+  header = parse_header(file)
 
-    decryptor = create_decryptor(header.encryption_type)
-    slot_key = get_slot_key(header.key_slot)
-    decryptor.set_slot_key(slot_key)
-    decryptor.set_file_key(file_key)
+  decryptor = create_decryptor(header.encryption_type)
+  slot_key = get_slot_key(header.key_slot)
+  decryptor.set_slot_key(slot_key)
+  decryptor.set_file_key(file_key)
 
-    file.seek(header.offset_to_data, FILE_SEEK_BEGIN)
+  file.seek(header.offset_to_data, FILE_SEEK_BEGIN)
 
-    offset = 0
-    while not file.eof():
-        byte = file.read_byte()
-        byte = decrypt(offset, byte)
+  offset = 0
+  while not file.eof():
+    byte = file.read_byte()
+    byte = decrypt(offset, byte)
 
-        offset = offset + 1
+    offset = offset + 1
 ```

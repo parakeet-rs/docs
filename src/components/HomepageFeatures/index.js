@@ -10,7 +10,9 @@ const FeatureList = [
       <>
         接口均作了命令行封装，方便查阅、调用。
         <br />
-        <small style={{color: 'gray'}}>不过为什么不直接从源码部署文档呢…</small>
+        <small style={{ color: 'gray' }}>
+          不过为什么不直接从源码部署文档呢…
+        </small>
       </>
     ),
   },
@@ -21,7 +23,7 @@ const FeatureList = [
       <>
         成熟的百科方案，使用 GitHub Actions 自动部署。
         <br />
-        <small style={{color: 'gray'}}>MDX 真的是太棒了，WTMCB！！</small>
+        <small style={{ color: 'gray' }}>MDX 真的是太棒了，WTMCB！！</small>
       </>
     ),
   },
@@ -32,13 +34,13 @@ const FeatureList = [
       <>
         使用 Rust 进行开发，执行效率一个顶俩。
         <br />
-        <small style={{color: 'gray'}}>虽然写的时候很痛苦…</small>
+        <small style={{ color: 'gray' }}>虽然写的时候很痛苦…</small>
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

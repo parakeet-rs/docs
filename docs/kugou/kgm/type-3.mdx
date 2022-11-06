@@ -17,27 +17,27 @@ Rust 的参考实现：
 
 ```py title="伪代码"
 fn md5_kugou(data):
-    hash = md5(data)
+  hash = md5(data)
 
-    # 每次拷贝两个字节，从后面开始拷贝。
-    for (src_i, src_j) in [(14, 15), (12, 13), ..., (0, 1)]:
-        result << hash[src_i] << hash[src_j]
+  # 每次拷贝两个字节，从后面开始拷贝。
+  for (src_i, src_j) in [(14, 15), (12, 13), ..., (0, 1)]:
+      result << hash[src_i] << hash[src_j]
 
 fn set_slot_key(slot_key):
-    key1 = md5_kugou(slot_key)
+  key1 = md5_kugou(slot_key)
 
 fn set_file_key(file_key):
-    key2 = md5_kugou(file_key)
-    key2 << byte(0x6b)
+  key2 = md5_kugou(file_key)
+  key2 << byte(0x6b)
 
 fn xor_offset_u32(offset):
-    (a, b, c, d) = unpack('@4B', offset)
-    result = a XOR b XOR c XOR d
+  (a, b, c, d) = unpack('@4B', offset)
+  result = a XOR b XOR c XOR d
 
 fn decrypt(offset, byte):
-    byte = byte XOR key2[offset]
-    byte = byte XOR (byte SHL 4)
-    byte = byte XOR key1[offset]
-    byte = byte XOR xor_offset_u32(offset)
+  byte = byte XOR key2[offset]
+  byte = byte XOR (byte SHL 4)
+  byte = byte XOR key1[offset]
+  byte = byte XOR xor_offset_u32(offset)
 
 ```
