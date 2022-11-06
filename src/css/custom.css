@@ -46,6 +46,8 @@
   box-sizing: content-box;
   margin-bottom: var(--ifm-leading);
   border-radius: 0.25em;
+  overflow: clip;
+  overflow: hidden;
 }
 
 .hex-viewer-container > hr {
