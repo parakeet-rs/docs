@@ -23,8 +23,8 @@ Rust 的参考实现：
 :::
 
 ```py title="伪代码"
-fn md5_kugou_v4(data: bytes, table: str):
-    md5_final = [] # 预期大小 = 31，实际使用后 30 项。
+fn v4_md5_kugou(data: bytes):
+    result = [] # 预期大小 = 31
     md5_digest = md5(data)
     indexes = [
         0x05, 0x0e, 0x0d, 0x02, 0x0c, 0x0a, 0x0f, 0x0b,
@@ -35,14 +35,16 @@ fn md5_kugou_v4(data: bytes, table: str):
 
     # 对照 index，将指定位置的哈希值拷贝下来。
     for index in indexes:
-        md5_final << md5_digest[index]
+        result << md5_digest[index]
 
-    result = [] # 预期大小 = 4 * (md5_final.len() - 1) * (key.len() - 1)
+fn v4_key_expansion(data: bytes, table: str):
+    md5_digest = v4_md5_kugou(data)
+    result = [] # 预期大小 = 4 * (md5_digest.len() - 1) * (key.len() - 1)
 
     # 枚举所有 data/table 的元素，跳过第一项。
     for i in 1..data.len():
-        for j in 1..md5_final.len():
-            temp = i * j * data[i] * data[j]
+        for j in 1..md5_digest.len():
+            temp = i * j * data[i] * md5_digest[j]
             # 取出小端字节组，例 a == (temp >> 0) & 0xFF
             (a, b, c, d) = pack('<4B', temp)
             result << a << d << c << b
@@ -51,10 +53,10 @@ fn set_slot_key(slot_key):
     key1 = md5(slot_key)
     key1 = hex(key1) # 小写，无空格
     key1 = base64(key1) # 结尾的 "=" 不能删除。
-    key1 = md5_kugou_v4(key1, str_slot_key_table)
+    key1 = v4_key_expansion(key1, str_slot_key_table)
 
 fn set_file_key(file_key):
-    key2 = md5_kugou_v4(file_key, str_file_key_table)
+    key2 = v4_key_expansion(file_key, str_file_key_table)
 
 fn xor_offset_u32(offset):
     (a, b, c, d) = unpack('@4B', offset)
