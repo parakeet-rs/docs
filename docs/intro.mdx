@@ -41,3 +41,7 @@ parakeet-crypto = { git = "https://github.com/parakeet-rs/parakeet-crypto-rs" }
 除非特殊注明，否则：
 
 - `key[index]` 表示 `key[index % len(key)]`
+- `i..j` 表示区间 `[i, j)` 的所有整值。步间为 `+1`。
+- `pack/unpack` 函数用于表示整数到字节组的变化关系。[参阅 Python struct 文档][py_struct]。
+
+[py_struct]: https://docs.python.org/3/library/struct.html
