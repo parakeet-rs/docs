@@ -1,8 +1,21 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
+const cloneDeep = require('lodash').cloneDeep;
 
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+
+function removeItalics(inputTheme) {
+  const theme = cloneDeep(inputTheme);
+
+  theme.styles?.forEach(({style}) => {
+    if (style.fontStyle === 'italic') {
+      delete style.fontStyle;
+    }
+  });
+
+  return theme;
+}
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -74,8 +87,8 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} Team Parakeet-RS. Built with Docusaurus.`,
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
+        theme: removeItalics(lightCodeTheme),
+        darkTheme: removeItalics(darkCodeTheme),
       },
     }),
 };
