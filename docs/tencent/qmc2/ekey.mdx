@@ -12,7 +12,7 @@ Rust 的参考实现：
 
 
 ```py title="伪代码示例"
-fn decrypt_ekey(Vec<u8> ekey):
+fn decrypt_ekey(ekey: bytes):
   ekey = base64_decode(ekey)
 
   if ekey.starts_with(b"QQMusic EncV2,Key:"):

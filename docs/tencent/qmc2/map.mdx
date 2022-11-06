@@ -14,23 +14,16 @@ Rust 的参考实现：
 <WarnQMC />
 
 ```py title="伪代码示例"
-fn decrypt_file(Vec<u8> buffer):
-  offset = 0
+fn decrypt_file(offset, input: byte):
+  # 0x7fff 是一个特殊情况
+  if offset == 0x7fff:
+    i = 0x7fff
+  else:
+    i = offset % 0x7fff
 
-  loop:
-    if end_of_file: break
+  key_index = (i * i + 71214) % key.size()
+  rotation = (key_index + 4) % 8
+  final_key = (key[key_index] << rotation) | (key[key_index] >> rotation)
 
-    # 0x7fff 是一个特殊情况
-    if offset == 0x7fff:
-      i = 0x7fff
-    else:
-      i = offset % 0x7fff
-
-    key_index = (i * i + 71214) % key.size()
-    rotation = (key_index + 4) % 8
-    final_key = (key[key_index] << rotation) | (key[key_index] >> rotation)
-
-    buffer[i] = buffer[i] XOR final_key
-
-    offset = offset + 1
+  result = byte XOR final_key
 ```
