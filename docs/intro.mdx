@@ -19,3 +19,15 @@ parakeet-crypto = { git = "https://github.com/parakeet-rs/parakeet-crypto-rs" }
 ```
 
 然后调用 `parakeet_crypto::` 命名空间内的方法即可。
+
+## 关于密钥
+
+:::caution
+
+该项目**不包含**解密文件所需要的密钥。
+
+你在该百科、代码仓库、以及操作库测试文件所看到的文件与密钥均为随机生成。
+
+这些密钥只能用于加、解密仓库提供的样本文件，而**不能**解密你从客户端获取到的文件。
+
+:::
