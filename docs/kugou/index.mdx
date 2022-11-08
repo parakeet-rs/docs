@@ -6,7 +6,8 @@ sidebar_position: 0
 import Ruby from '@site/src/components/Ruby';
 
 该项目实现了酷狗 PC 版的 `KGM` 与 `VPR` 加密算法实现。<!--
--->虽然它们的后缀名不同，但是解密过程是相同的。
+-->虽然它们的后缀名不同，但是解密过程是相同的，<!--
+-->仅有的区别为文件头以及密钥的校验值。
 
 :::tip 该项目实现的不是“码表”解密
 
@@ -17,7 +18,7 @@ import Ruby from '@site/src/components/Ruby';
 在此之后也对该密码表进行过攻击[^1]，改进为使用三个 16 × 17 大小的密码表进行解码。<!--
 -->缺陷则是随着文件大小的增加，越是在后面的内容越需要更多时间进行解密。
 
-该项目实现的解密算法不依赖该密码表，而是采用了与 PC 客户端相同的解密实现。
+小鹦鹉加解操作密库实现的解密算法不依赖该密码表，而是采用了与 PC 客户端相同的解密实现。
 
 [^1]: [对 KGM 密码表进行压缩的尝试](https://github.com/jixunmoe/kugou-crypto/blob/v1.0.3/src/cli/compress-mask.ts#L11)
 
@@ -41,8 +42,8 @@ struct file_header {
   DWORD key_slot; // 密钥槽号
 
   // 偏移: 0x1c
-  BYTE file_sig[0x10]; // 文件密钥合法性验证
-  BYTE file_key[0x10]; // 文件密钥
+  BYTE key_challenge[0x10]; // 文件密钥合法性验证
+  BYTE key[0x10]; // 文件密钥
 
   // 偏移: 0x3c
   BYTE padding[self.offset_to_data - 0x3c];

@@ -6,6 +6,7 @@ sidebar_position: 0
 import CodeRef from '@site/src/components/CodeRef';
 import Ruby from '@site/src/components/Ruby';
 import HexViewer from '@site/src/components/HexViewer';
+import { TermMagicNumber } from '@site/src/term/TermMagicNumber';
 
 虽然文件密钥是随机生成的，但 PC 端的播放器会对该密钥的合法性进行验证。
 
@@ -13,14 +14,33 @@ import HexViewer from '@site/src/components/HexViewer';
 
 ## 签名验证
 
-KGM 解密器在初始化后，会对 `file_sig` 进行解密操作（使用参数 `offset = 0`）。
+KGM 解密器在初始化后，会对 `key_challenge` 进行解密操作（使用参数 `offset = 0`）。
 
-解密结束后的内容应等于该期待值：
+解密结束后的内容应等于预设内容。
 
-<HexViewer data={'hex:3885ed92795ff84cb303614116a01d47'} />
+### KGM 格式
+
+文件头的 `magic` <TermMagicNumber />：
+
+<HexViewer data={'hex:7C D5 32 EB 86 02 7F 4B A8 AF A6 8E 0F FF 99 14'} />
+
+文件头的 `key_challenge` 解密后的<TermMagicNumber />：
+
+<HexViewer data={'hex:38 85 ED 92 79 5F F8 4C B3 03 61 41 16 A0 1D 47'} />
+
+### VPR 格式
+
+文件头的 `magic` <TermMagicNumber />：
+
+<HexViewer data={'hex:05 28 BC 96 E9 E4 5A 43 91 AA BD D0 7A F5 36 31'} />
+
+文件头的 `key_challenge` 解密后的<TermMagicNumber />：
+
+<HexViewer data={'hex:1D 5A 05 34 0C 41 8D 42 9C 83 92 6C AE 16 FE 56'} />
 
 ---
 
 相关代码：
 
-- <CodeRef at="1dcb48a" file="src/kugou/kgm_crypto_factory.rs#L52-L59" />
+- <CodeRef at="6d9bd07" file="src/kugou/kgm_crypto_factory.rs#L44-L53" />
+- <CodeRef at="6d9bd07" file="src/kugou/kgm_magic.rs#L1" />
