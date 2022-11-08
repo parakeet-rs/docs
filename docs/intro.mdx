@@ -1,6 +1,6 @@
 ---
 title: 首页
-sidebar_position: -1
+sidebar_position: 0
 hide_title: true
 ---
 
@@ -19,29 +19,3 @@ parakeet-crypto = { git = "https://github.com/parakeet-rs/parakeet-crypto-rs" }
 ```
 
 然后调用 `parakeet_crypto::` 命名空间内的方法即可。
-
-## 文档阅读指南
-
-### 命令行调用
-
-命令行调用时，最后两个参数通常都是输入/输出文件。
-
-### 长命令行截断
-
-命令行调用时可能会因为参数过长而截断。
-
-本文会在行末使用 `\` 符号来表示下一行的内容是连续的 —— 这在 unix 终端环境下是合法的。
-
-在 Windows 下你可能需要将该符号替换为 `^` (cmd) 或 <code>`</code> (PowerShell) 符号，或直接合并为一行即可。
-
-### 伪代码
-
-项目包含了部分算法的伪代码描述。
-
-除非特殊注明，否则：
-
-- `key[index]` 表示 `key[index % len(key)]`
-- `i..j` 表示区间 `[i, j)` 的所有整值。步间为 `+1`。
-- `pack/unpack` 函数用于表示整数到字节组的变化关系。[参阅 Python struct 文档][py_struct]。
-
-[py_struct]: https://docs.python.org/3/library/struct.html
