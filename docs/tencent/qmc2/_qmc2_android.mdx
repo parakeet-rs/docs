@@ -8,7 +8,7 @@ import HexViewer from '@site/src/components/HexViewer';
 ```c
 struct QMAndroidTag {
   char csv_row[variable]; // 使用逗号分隔的文字，可以分解为 3 段。
-  uint32_t sizeof_csv_row; // 上述字符串的大小
+  uint32_t sizeof_csv_row; // 上述字符串的大小（大端序）
   char tag[4]; // 文件类型标记
 }
 ```
@@ -26,7 +26,7 @@ struct QMAndroidTag {
 <HexViewer
   data={`hex:
     45 6E 63 72 79 70 74 65 64 4B 65 79 2C 31 32 33
-    34 35 36 2C 32 15 00 00 00 51 54 61 67
+    34 35 36 2C 32 00 00 00 15 51 54 61 67
   `}
 />
 
