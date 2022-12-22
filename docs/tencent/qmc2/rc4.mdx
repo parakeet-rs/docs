@@ -10,14 +10,161 @@ Rust 的参考实现：
 - <CodeRef at="1dcb48a" file="src/tencent/qmc2_decryptor_rc4.rs#L58" />
 - <CodeRef at="1dcb48a" file="src/utils/rc4_qmc2.rs#L14" />
 
+## 解密流程
+
+QMC2-RC4 加密的文件会进行分段，其中第一个分段还会进行额外处理。
+
+每一个分段都有 `0x1400` 个字节。
+
+### 分段密钥
+
+获得 512 字节的密钥后，首先需要利用这个密钥计算一个简单的校验码（哈希值）。
+
+```py title="伪代码示例"
+fn compute_key_hash(key: byte[]):
+  hash: u32 = 1
+  for key_byte in key:
+    next_hash: u32 = hash * key_byte
+
+    # Early exit
+    if next_hash == 0 or next_hash <= hash:
+      return hash
+
+    hash = next_hash
+
+  return hash
+```
+
+这个哈希非常脆弱，不理解为何如此实现。
+
+然后区段密钥即通过混合这个 `key_hash` 与 `segment_idx` (从 0 开始) 结合获得：
+
+```py title="伪代码示例"
+global key_hash: u32
+
+fn compute_segment_key(segment_idx: u64, seed: u64):
+  # 理论上来说，参数都使用 u32 也可以。
+
+  # Win 下的除法指令会得到 0 的结果。
+  # 部分语言会检查该被除数并抛出错误，因此提前处理该情况。
+  if seed == 0: return 0
+
+  result: u64 = key_hash / ((segment_idx + 1.0) * seed) * 100.0
+
+  return result
+```
+
+### 第一个分段
+
+第一个分段分为两部分，首先是前 `0x80` 字节的处理：
+
+```py title="伪代码示例"
+global key: byte[]
+global key_hash: u32
+
+fn decrypt_first_segment(data: byte[]):
+  for i in 0..data.len():
+    seed = key[i]
+    data[i] ^= key[compute_segment_key(i, seed)]
+```
+
+剩下的 `0x1380` 字节可以参考下方的其它分段的解密流程，但是要调过前 `0x80`
+字节的处理。
+
+### 其它分段
+
 :::caution RC4 实现的细节
 
-QMC 2 (RC4) 的 State 大小为密钥长度，目前发现的密钥长度都是 256。
+QMC 2 (RC4) 的 State 大小为密钥长度，目前发现的 RC4 密钥长度均为 512 字节。
 
 RC4 算法的参考资料可以在[维基百科][wiki_rc4]查看。
+
+此外，每抵达分段边界时 (`offset % 0x1400 == 0` 的情况) 需重置 RC4 State。
 
 [wiki_rc4]: https://en.wikipedia.org/wiki/RC4#Description
 
 :::
 
-伪代码：暂无
+```py title="伪代码示例"
+const SEGMENT_SIZE: u64 = 0x1400
+global key: byte[]
+
+struct RC4_State {
+  i: u32;
+  j: u32;
+  s: u8[N]; // 此处 N 的大小为密钥长度。
+}
+
+# 初始化 RC4 随机流
+fn tc_rc4_init(rc4: &out RC4_State, offset: u64):
+  rc4.i = 0
+  rc4.j = 0
+
+  for i in 0..key.len():
+    rc4.s[i] = i & 0xff
+
+  j: u32 = 0
+  for i in 0..key.len():
+    j = (j + rc4.s[i] + key[i]) % key.len()
+    swap(rc4.s[i], rc4.s[j])
+
+  segment_idx: u64 = floor(offset / SEGMENT_SIZE) # 向下求整
+
+  # 逆向的时候此处即为 511 (0x1FF) ，可能是代码写死该值后被编译器优化的结果。
+  seed: u32 = key[segment_idx & 0x1FF]
+  discard_count = compute_segment_key(segment_idx, seed) & 0x1FF
+  discard_count += offset % SEGMENT_SIZE # 不在偏移边界，额外跳过一些数据。
+
+  # 跳过 RC4 随机数流的一部分数据
+  for i in 0..discard_count:
+    tc_rc4_next(rc4)
+
+# 生成 RC4 随机流的下一个字节
+fn tc_rc4_next(rc4: &in_out RC4_State):
+  rc4.i = (rc4.i + 1) % rc4.s.len()
+  rc4.j = (rc4.s[rc4.i] + rc4.j) % rc4.s.len()
+  swap(rc4.s[rc4.i], rc4.s[rc4.j])
+  return rc4.s[rc4.s[i] + rc4.s[j]]
+
+fn tc_rc4_decrypt(rc4: &in_out RC4_State, data: u8[]):
+  for i in 0..data.len():
+    data[i] ^= tc_rc4_next(rc4)
+
+```
+
+单独一个区块的解密代码示例如下：
+
+```py title="伪代码示例"
+fn decrypt_segment(segment: byte[], segment_idx: u32):
+  assert(segment.len() <= SEGMENT_SIZE, "segment 大小不得超出设计的大小")
+  let rc4: RC4_State
+  tc_rc4_init(rc4, segment_idx * SEGMENT_SIZE)
+  for i in 0..segment.len():
+    segment[i] ^= tc_rc4_next(rc4)
+```
+
+### 解密整合
+
+对任意位置的任意大小缓冲区进行解密操作：
+
+```py title="伪代码示例"
+fn decrypt_data(data: &in_out byte[], offset: u64):
+  # 对第一“小块”进行解密
+  idx = 0
+  if offset < 0x80:
+    first_segment = &data[0..0x80 - offset]
+    decrypt_first_segment(first_segment, offset)
+    offset = 0x80
+    idx = first_segment.len()
+
+  # 对其它区段进行解密
+  while idx < data.len():
+    # 重置区段信息
+    let rc4: RC4_State
+    tc_rc4_init(rc4, offset)
+
+    # 计算当前区段剩余内容，并解密这一个区段
+    process_len = min(data.len() - idx, SEGMENT_SIZE)
+    tc_rc4_decrypt(rc4, &data[idx..idx + process_len])
+    idx += process_len
+```
